@@ -1,0 +1,82 @@
+%YAML 1.2
+---
+name: PSEINT
+file_extensions:
+  - psc
+scope: source.pseint
+
+contexts:
+  main:
+    # Palabras clave
+    - match: \b(algoritmo|proceso|variables|real|entero|texto|logico|caracter|cadena)\b
+      scope: keyword.control.pseint
+    - match: \b(definir)\b
+      scope: keyword.declaration.pseint
+    - match: \b(escribir)\b
+      scope: entity.name.function.attribute
+    - match: \b(leer)\b
+      scope: entity.name.function.attribute
+    - match: \b(repetir|hasta|si|sino|finsi|para|finpara|segun|finsegun|mientras|finmientras|hacer|hastaque|funcion|finfuncion|subproceso|finsubproceso|como|dimension|entonces|incluir|inicio|fin|segun|de|otro|modo|finalgoritmo)\b
+      scope: keyword.control.structure.pseint
+    # Funciones y subprocesos
+    - match: \b(funcion|finfuncion|subproceso|finsubproceso)\b
+      scope: entity.name.function.pseint
+    # Directivas de inclusión
+    - match: \b(incluir)\b
+      scope: meta.include.pseint
+    # Estructuras de datos
+    - match: \b(dimension)\b
+      scope: storage.type.pseint
+    - match: \b([a-zA-Z_][a-zA-Z_0-9]*)\b
+      scope: variable.other.pseint
+    # Constantes
+    - match: \b(verdadero|falso)\b
+      scope: constant.language.boolean.pseint
+    - match: \b(\d+(\.\d+)?)\b
+      scope: constant.numeric.pseint
+    - match: '"(.*?)"'
+      scope: string.quoted.double.pseint
+    - match: "'(.*?)'"
+      scope: string.quoted.single.pseint
+    # Variables
+    - match: \b([a-zA-Z_][a-zA-Z_0-9]*)\b
+      scope: variable.name.pseint
+    # Comentarios
+    - match: \b(\/\/.*)
+      scope: comment.line.double-slash.pseint
+    - match: \/\*
+      scope: comment.block.pseint
+      push: block-comment
+    # Operadores
+    - match: \b(sumar|restar|multiplicar|dividir|mod|y|o|no)\b
+      scope: keyword.operator.pseint
+    - match: (\+|\-|\*|\/|\^|\<|\>|\=|\<=|\>=|\<\>)
+      scope: keyword.operator.pseint
+    # Excepciones
+    - match: \b(intente|capture|lanze)\b
+      scope: keyword.control.exception.pseint
+
+  block-comment:
+    - meta_scope: comment.block.pseint
+    - match: \*\/
+      pop: true
+    - match: .
+      scope: comment.block.pseint
+
+  function-declaration:
+    - match: \b(funcion|subproceso)\b
+      scope: entity.name.function.pseint
+    - match: \b([a-zA-Z_][a-zA-Z_0-9]*)\b
+      scope: entity.name.function.pseint
+    - match: \(
+      scope: punctuation.definition.parameters.begin.pseint
+      push: function-parameters
+    - match: \)
+      scope: punctuation.definition.parameters.end.pseint
+      pop: true
+
+  function-parameters:
+    - match: \b([a-zA-Z_][a-zA-Z_0-9]*)\b
+      scope: variable.parameter.pseint
+    - match: ','
+      scope: punctuation.separator.parameters.pseint
